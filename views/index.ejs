@@ -1,0 +1,38 @@
+<main>
+  <%-include('./chatrooms')%>
+  <div class="chat">
+    <h1>Welcome to #public!</h1>
+    <%if (!user) {%>
+    <h2>To make posts or view users, please sign in.</h2>
+    <%} else {%>
+    <h3>You are logged in as: <%=user.username%></h3>
+    <%}%>
+    <hr />
+    <div class="message-wrapper">
+      <div class="message">
+        <div class="user-details">
+          <div class="username">Username</div>
+          <div class="date">24/07/25</div>
+        </div>
+        <div class="title">Post title</div>
+        <div class="text">
+          Taken with 🎞️ Kodak Portra 400 | 🧪 Fuji Hunt C-41 | 🖨️ EOS R6 + RF 100mm f/2.8L Macro |
+          📷 Pentax 67 + SMC Pentax 67 55mm 1:4
+        </div>
+        <img src="/images/image1.avif" alt="Image" />
+      </div>
+      <div class="message">
+        <div class="user-details">
+          <div class="username">Username</div>
+          <div class="date">24/07/25</div>
+        </div>
+        <div class="title">Post title</div>
+        <div class="text">
+          Taken with 🎞️ Kodak Portra 400 | 🧪 Fuji Hunt C-41 | 🖨️ EOS R6 + RF 100mm f/2.8L Macro |
+          📷 Pentax 67 + SMC Pentax 67 55mm 1:4
+        </div>
+        <img src="/images/image1.avif" alt="Image" />
+      </div>
+    </div>
+  </div>
+</main>

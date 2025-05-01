@@ -1,0 +1,19 @@
+<div class="header">
+  <div class="logo">
+    <div class="github">
+      <a href="https://github.com/luciavu/members-only" target="_blank"
+        ><i class="fab fa-github"></i
+      ></a>
+    </div>
+    <h2><a href="/">Members Only</a></h2>
+  </div>
+  <%if (!user){%>
+  <div class="login-status">
+    <p><a href="/signup" class="signup">Sign up</a></p>
+    <p><a href="/login" class="login">Login</a></p>
+  </div>
+  <%} else {%>
+  <p><a href="/logout" class="logout">Logout</a></p>
+
+  <%}%>
+</div>
