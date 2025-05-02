@@ -1,0 +1,11 @@
+<form action="/member-login" method="post" class="member-form">
+  <h2>Join the club.</h2>
+  <p class="hint">Hint: $</p>
+
+  <%- include("./partials/errors.ejs") %>
+  <label for="memberPass"
+    >Password:
+    <input type="password" id="memberPass" name="memberPass" />
+  </label>
+  <button type="submit">Enter</button>
+</form>

@@ -1,7 +1,7 @@
 <main>
   <%-include('./chatrooms')%>
   <div class="chat">
-    <h1>Welcome to #public!</h1>
+    <h1>Welcome to #<%=chatroom%>!</h1>
     <%if (!user) {%>
     <h2>To make posts or view users, please sign in.</h2>
     <%} else {%>
@@ -9,30 +9,20 @@
     <%}%>
     <hr />
     <div class="message-wrapper">
+      <%messages.forEach((message) => { %>
       <div class="message">
         <div class="user-details">
-          <div class="username">Username</div>
-          <div class="date">24/07/25</div>
+          <div class="username"><%= user ? message.username : '*****';%></div>
+          <div class="date"><%= user ? message.created_at : '****** ***** *********';%></div>
         </div>
-        <div class="title">Post title</div>
-        <div class="text">
-          Taken with 🎞️ Kodak Portra 400 | 🧪 Fuji Hunt C-41 | 🖨️ EOS R6 + RF 100mm f/2.8L Macro |
-          📷 Pentax 67 + SMC Pentax 67 55mm 1:4
-        </div>
-        <img src="/images/image1.avif" alt="Image" />
+        <div class="title"><%=message.title%></div>
+        <div class="text"><%=message.message%></div>
+
+        <% if (message.image) {%>
+        <img src="<%=message.image%>" alt="Image" />
+        <%}%>
       </div>
-      <div class="message">
-        <div class="user-details">
-          <div class="username">Username</div>
-          <div class="date">24/07/25</div>
-        </div>
-        <div class="title">Post title</div>
-        <div class="text">
-          Taken with 🎞️ Kodak Portra 400 | 🧪 Fuji Hunt C-41 | 🖨️ EOS R6 + RF 100mm f/2.8L Macro |
-          📷 Pentax 67 + SMC Pentax 67 55mm 1:4
-        </div>
-        <img src="/images/image1.avif" alt="Image" />
-      </div>
+      <%})%>
     </div>
   </div>
 </main>

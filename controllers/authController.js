@@ -1,5 +1,5 @@
 const passport = require('passport');
-const pool = require('../config/database');
+const db = require('../db/queries');
 const { genPassword } = require('../lib/passwordUtils');
 const { body, validationResult } = require('express-validator');
 
@@ -16,65 +16,102 @@ const validateUser = [
     .withMessage(`Passwords don't match`),
 ];
 
-module.exports = {
-  getLogin: (req, res, next) => {
-    res.render('login');
-  },
-  getSignup: (req, res, next) => {
-    res.render('signup');
-  },
+async function getHome(req, res, next) {
+  const messages = await db.getMessages('public');
+  res.render('index', { chatroom: 'public', messages: messages });
+}
 
-  getHome: (req, res, next) => {
-    res.render('index');
-  },
-  getLogout: (req, res, next) => {
-    req.logout((err) => {
-      if (err) {
-        return next(err);
+const getMemberLogin = (req, res, next) => {
+  res.render('member-login');
+};
+
+async function getMembersHome(req, res, next) {
+  const messages = await db.getMessages('members');
+  res.render('index', { chatroom: 'members', messages: messages });
+}
+
+const getLogin = (req, res, next) => {
+  res.render('login');
+};
+
+const getSignup = (req, res, next) => {
+  res.render('signup');
+};
+
+const getLogout = (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      return next(err);
+    }
+    res.redirect('/');
+  });
+};
+
+const postLogin = passport.authenticate('local', {
+  failureRedirect: '/login',
+  successRedirect: '/',
+});
+
+const postSignUp = [
+  ...validateUser,
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      const { username, password } = req.body;
+
+      // Check if username already exists
+      const existingUser = await db.getUserByName(username);
+      if (existingUser) {
+        return res.status(400).render('signup', {
+          errors: [{ msg: 'Username already taken.' }],
+        });
       }
-      res.redirect('/');
+
+      // Check password and username between 3 - 15 chars, passwords match
+      if (!errors.isEmpty()) {
+        return res.status(400).render('signup', { errors: errors.array() });
+      }
+
+      const { hash, salt } = genPassword(password);
+      // Insert new user into database
+      await db.addUser(req.body.username, hash, salt);
+      res.redirect('/login');
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  },
+];
+
+const postMemberLogin = async (req, res, next) => {
+  const { memberPass } = req.body;
+  if (memberPass !== process.env.MEMBER_PASS) {
+    return res.render('member-login', {
+      errors: [{ msg: 'Incorrect password. Please try again.' }],
     });
-  },
+  }
+  try {
+    if (!req.user) {
+      return res.status(401).render('member-login', {
+        errors: [{ msg: 'You must be logged in to become a member.' }],
+      });
+    }
+    await db.updateMembership(req.user);
+    res.redirect('/member');
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+};
 
-  postSignUp: [
-    ...validateUser,
-    async (req, res, next) => {
-      try {
-        const errors = validationResult(req);
-        const { username, password } = req.body;
-
-        // Check if username already exists
-        const existingUser = await pool.query(`SELECT * FROM users WHERE username = $1`, [
-          username,
-        ]);
-        if (existingUser.rows.length > 0) {
-          return res.status(400).render('signup', {
-            errors: [{ msg: 'Username already taken.' }],
-          });
-        }
-
-        // Check password and username between 3 - 15 chars, passwords match
-        if (!errors.isEmpty()) {
-          return res.status(400).render('signup', { errors: errors.array() });
-        }
-
-        const { hash, salt } = genPassword(password);
-        // Insert new user into database
-        await pool.query(
-          `INSERT INTO users(username, hash, salt, admin) VALUES ($1, $2, $3, $4);`,
-          [req.body.username, hash, salt, false]
-        );
-
-        res.redirect('/login');
-      } catch (err) {
-        console.error(err);
-        next(err);
-      }
-    },
-  ],
-
-  postLogin: passport.authenticate('local', {
-    failureRedirect: '/login',
-    successRedirect: '/',
-  }),
+module.exports = {
+  getLogin,
+  getSignup,
+  getMemberLogin,
+  getMembersHome,
+  getHome,
+  getLogout,
+  postSignUp,
+  postLogin,
+  postMemberLogin,
 };

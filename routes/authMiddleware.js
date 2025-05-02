@@ -1,17 +1,23 @@
 module.exports.isAuth = (req, res, next) => {
   if (req.isAuthenticated()) {
-    next();
+    return next();
   } else {
-    res.status(401).json({ msg: 'You are not authorized to view this resource. Please login.' });
+    return res
+      .status(401)
+      .render('unauthorised', {
+        message: 'You are not authorized to view this resource. Please login.',
+      });
   }
 };
 
-module.exports.isAdmin = (req, res, next) => {
-  if (req.isAuthenticated() && req.user.admin) {
-    next();
+module.exports.isMember = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.member) {
+    return next();
   } else {
-    res
+    return res
       .status(403)
-      .json({ msg: 'You are not authorized to view this resource because you are not an admin.' });
+      .render('unauthorised', {
+        message: 'You are not authorized to view this resource because you are not a member.',
+      });
   }
 };
