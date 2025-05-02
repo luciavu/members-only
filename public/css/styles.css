@@ -86,7 +86,6 @@ form button,
   padding: 0.6rem 1rem;
 }
 
-.logout,
 form button,
 .new-message {
   background-color: var(--contrast);
@@ -238,10 +237,11 @@ form button {
 .new-message-form textarea {
   width: 100%;
 }
+
 .new-message,
 .new-message-form button,
 p .signup {
-  background-color: rgb(73, 220, 95);
+  background-color: var(--contrast);
   color: var(--main);
 }
 
