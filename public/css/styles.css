@@ -55,16 +55,17 @@ h2 a {
 
 .login-status a,
 .logout,
-form button {
+form button,
+.new-message {
   text-decoration: none;
   border-radius: 0.8rem;
   font-weight: 600;
   padding: 0.6rem 1rem;
 }
 
-p .signup,
 .logout,
-form button {
+form button,
+.new-message {
   background-color: white;
   color: black;
 }
@@ -101,6 +102,14 @@ main {
 
 hr {
   border-color: var(--text);
+  margin-top: 2rem;
+}
+
+.login-user {
+  margin-top: -1.5rem;
+  margin-bottom: 2rem;
+  font-weight: 400;
+  color: var(--text);
 }
 
 .date {
@@ -164,7 +173,8 @@ form h1 {
   margin: 0;
 }
 
-form input {
+form input,
+textarea {
   background-color: rgb(255, 255, 255, 0.1);
   border: none;
   padding: 0.5rem;
@@ -195,4 +205,23 @@ form button {
   width: 100%;
   display: flex;
   justify-content: center;
+}
+
+.new-message-form label {
+  width: 100%;
+}
+
+.new-message-form input,
+.new-message-form textarea {
+  width: 100%;
+}
+.new-message,
+.new-message-form button,
+p .signup {
+  background-color: rgb(73, 220, 95);
+  color: rgb(0, 0, 0);
+}
+
+.new-message-form button {
+  padding: 0.8rem 3rem;
 }

@@ -1,0 +1,12 @@
+<form action="/<%=chatroom%>/new-message" method="post" class="new-message-form">
+  <h1>Add a message</h1>
+  <%- include("./partials/errors.ejs") %>
+  <label for="title"
+    >Title <input type="text" name="title" id="title" minlength="3" maxlength="50"
+  /></label>
+  <label for="message"
+    >Message
+    <textarea name="message" id="message" rows="5" minlength="3" maxlength="200"></textarea>
+  </label>
+  <button type="submit">Post</button>
+</form>

@@ -16,6 +16,13 @@ const validateUser = [
     .withMessage(`Passwords don't match`),
 ];
 
+const titleErr = 'must be between 3 and 30 characters.';
+const messageErr = 'must be between 3 and 100 characters.';
+const validateMessage = [
+  body('title').trim().isLength({ min: 3, max: 50 }).withMessage(`Title ${titleErr}`),
+  body('message').trim().isLength({ min: 3, max: 200 }).withMessage(`Message ${messageErr}`),
+];
+
 async function getHome(req, res, next) {
   const messages = await db.getMessages('public');
   res.render('index', { chatroom: 'public', messages: messages });
@@ -23,6 +30,11 @@ async function getHome(req, res, next) {
 
 const getMemberLogin = (req, res, next) => {
   res.render('member-login');
+};
+
+const getNewMessage = (req, res, next) => {
+  const { chatroom } = req.params;
+  res.render('new-message', { chatroom: chatroom });
 };
 
 async function getMembersHome(req, res, next) {
@@ -83,6 +95,30 @@ const postSignUp = [
   },
 ];
 
+const postMessage = [
+  ...validateMessage,
+  async (req, res, next) => {
+    try {
+      const errors = validationResult(req);
+      const { title, message } = req.body;
+      const { chatroom } = req.params;
+
+      // Check title and message atleast 3 chars
+      if (!errors.isEmpty()) {
+        return res
+          .status(400)
+          .render('new-message', { chatroom: chatroom, errors: errors.array() });
+      }
+      // Insert new message and reload chatroom
+      await db.addMessage(req.user.id, title, message, chatroom);
+      res.redirect(`/${chatroom}`);
+    } catch (err) {
+      console.error(err);
+      next(err);
+    }
+  },
+];
+
 const postMemberLogin = async (req, res, next) => {
   const { memberPass } = req.body;
   if (memberPass !== process.env.MEMBER_PASS) {
@@ -109,8 +145,10 @@ module.exports = {
   getSignup,
   getMemberLogin,
   getMembersHome,
+  getNewMessage,
   getHome,
   getLogout,
+  postMessage,
   postSignUp,
   postLogin,
   postMemberLogin,

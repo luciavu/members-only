@@ -5,8 +5,12 @@
     <%if (!user) {%>
     <h2>To make posts or view users, please sign in.</h2>
     <%} else {%>
-    <h3>You are logged in as: <%=user.username%></h3>
+    <h3 class="login-user">You are logged in as: <%=user.username%></h3>
+
+    <%}%> <% if (user) {%>
+    <a class="new-message" href="<%=chatroom%>/new-message">Create a new message</a>
     <%}%>
+
     <hr />
     <div class="message-wrapper">
       <%messages.forEach((message) => { %>

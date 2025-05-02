@@ -44,8 +44,6 @@ app.use(
 require('./config/passport');
 app.use(passport.session());
 app.use((req, res, next) => {
-  console.log(req.session);
-  console.log(req.user);
   res.locals.user = req.user;
   next();
 });
